@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>Smartlog.Services</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SMARTLOG.Domain\SMARTLOG.Domain.csproj" />
+    <ProjectReference Include="..\SMARTLOG.Data\SMARTLOG.Data.csproj" />
+  </ItemGroup>
+
+</Project>

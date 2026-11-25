@@ -1,0 +1,292 @@
+<UserControl x:Class="Smartlog.App.Views.VuePlanning"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- Projet et indicateurs du planning -->
+        <DockPanel Grid.Row="0" Margin="0,0,0,12">
+            <TextBlock Text="Projet :" VerticalAlignment="Center" Margin="0,0,8,0" />
+            <ComboBox Width="320" Height="30" DockPanel.Dock="Left"
+                      ItemsSource="{Binding Projets}" DisplayMemberPath="Intitule"
+                      SelectedItem="{Binding ProjetSelectionne, Mode=TwoWay}"
+                      Margin="0,0,12,0" />
+            <Button Content="Recalculer le CPM" Width="140" Height="30" DockPanel.Dock="Right"
+                    Command="{Binding RecalculerCommand}" />
+            <TextBlock DockPanel.Dock="Right" Margin="16,0,12,0" VerticalAlignment="Center"
+                       Foreground="#C0392B" FontWeight="SemiBold"
+                       Text="{Binding NombreTachesCritiques, StringFormat='{}{0} tâche(s) critique(s)'}" />
+            <TextBlock Text="{Binding Message}" VerticalAlignment="Center" Margin="16,0,0,0"
+                       Foreground="{StaticResource BrushAccent}" TextTrimming="CharacterEllipsis" />
+        </DockPanel>
+
+        <!-- Saisie des tâches WBS et des liaisons -->
+        <Grid Grid.Row="1" Margin="0,0,0,12">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1.15*" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+
+            <Border BorderBrush="#D8DEE4" BorderThickness="1" CornerRadius="4" Padding="12" Margin="0,0,8,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="90" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.Row="0" Text="Libellé" VerticalAlignment="Center" />
+                    <TextBox Grid.Row="0" Grid.Column="1" Height="28" Margin="0,0,0,6"
+                             Text="{Binding LibelleTache, UpdateSourceTrigger=PropertyChanged}" />
+
+                    <TextBlock Grid.Row="1" Text="Début prévu" VerticalAlignment="Center" />
+                    <TextBox Grid.Row="1" Grid.Column="1" Height="28" Margin="0,0,0,6"
+                             Text="{Binding DateDebutTexte, UpdateSourceTrigger=PropertyChanged}"
+                             ToolTip="Format AAAA-MM-JJ" />
+
+                    <TextBlock Grid.Row="2" Text="Fin prévue" VerticalAlignment="Center" />
+                    <TextBox Grid.Row="2" Grid.Column="1" Height="28" Margin="0,0,0,6"
+                             Text="{Binding DateFinTexte, UpdateSourceTrigger=PropertyChanged}"
+                             ToolTip="Format AAAA-MM-JJ" />
+
+                    <TextBlock Grid.Row="3" Text="Parent (WBS)" VerticalAlignment="Center" />
+                    <StackPanel Grid.Row="3" Grid.Column="1" Orientation="Horizontal">
+                        <ComboBox Width="230" Height="28" ItemsSource="{Binding ParentsPossibles}"
+                                  DisplayMemberPath="Libelle"
+                                  SelectedItem="{Binding ParentSelectionne, Mode=TwoWay}" />
+                        <Button Content="Nouvelle tâche" Width="110" Height="28" Margin="8,0,0,0"
+                                Command="{Binding CreerTacheCommand}" />
+                        <Button Content="Enregistrer" Width="100" Height="28" Margin="6,0,0,0"
+                                Command="{Binding EnregistrerTacheCommand}" />
+                        <Button Content="Supprimer" Width="90" Height="28" Margin="6,0,0,0"
+                                Command="{Binding SupprimerTacheCommand}" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <Border Grid.Column="1" BorderBrush="#D8DEE4" BorderThickness="1" CornerRadius="4" Padding="12">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.Row="0" Text="De" VerticalAlignment="Center" />
+                    <ComboBox Grid.Row="0" Grid.Column="1" Height="28" Margin="0,0,8,6"
+                              ItemsSource="{Binding ToutesTaches}" DisplayMemberPath="Libelle"
+                              SelectedItem="{Binding PredecesseurSelectionne, Mode=TwoWay}" />
+                    <TextBlock Grid.Row="0" Grid.Column="2" Text="Vers" VerticalAlignment="Center" />
+                    <ComboBox Grid.Row="0" Grid.Column="3" Height="28" Margin="0,0,0,6"
+                              ItemsSource="{Binding ToutesTaches}" DisplayMemberPath="Libelle"
+                              SelectedItem="{Binding SuccesseurSelectionne, Mode=TwoWay}" />
+
+                    <TextBlock Grid.Row="1" Text="Type" VerticalAlignment="Center" />
+                    <ComboBox Grid.Row="1" Grid.Column="1" Height="28" Margin="0,0,8,6"
+                              ItemsSource="{Binding TypesLiaison}" DisplayMemberPath="Libelle"
+                              SelectedItem="{Binding TypeLiaisonSelectionne, Mode=TwoWay}" />
+                    <StackPanel Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2" Orientation="Horizontal"
+                                HorizontalAlignment="Right" Margin="0,0,0,6">
+                        <Button Content="Lier" Width="80" Height="28"
+                                Command="{Binding AjouterLiaisonCommand}" />
+                        <Button Content="Supprimer le lien" Width="130" Height="28" Margin="6,0,0,0"
+                                Command="{Binding SupprimerLiaisonCommand}" />
+                    </StackPanel>
+
+                    <DataGrid Grid.Row="2" Grid.ColumnSpan="4" Height="92" Margin="0,4,0,0"
+                              ItemsSource="{Binding Liaisons}"
+                              SelectedItem="{Binding LiaisonSelectionnee, Mode=TwoWay}"
+                              AutoGenerateColumns="False" IsReadOnly="True"
+                              CanUserAddRows="False" SelectionMode="Single" SelectionUnit="FullRow"
+                              GridLinesVisibility="Horizontal" HeadersVisibility="Column"
+                              AlternatingRowBackground="#F7F9FA" FontSize="11">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="De" Binding="{Binding PredecesseurLibelle}" Width="*" />
+                            <DataGridTextColumn Header="Vers" Binding="{Binding SuccesseurLibelle}" Width="*" />
+                            <DataGridTextColumn Header="Type" Binding="{Binding TypeLibelle}" Width="100" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!-- Gantt : arborescence à gauche, diagramme à droite, lignes synchronisées -->
+        <Border Grid.Row="2" BorderBrush="#D8DEE4" BorderThickness="1" CornerRadius="4" Padding="8">
+            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="300" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Border Grid.Row="0" Grid.Column="0" Background="#F1F4F6" BorderBrush="#D8DEE4"
+                            BorderThickness="0,0,1,1">
+                        <TextBlock Text="Arborescence des tâches (WBS)" FontWeight="SemiBold"
+                                   VerticalAlignment="Center" Margin="10,0" />
+                    </Border>
+                    <Border Grid.Row="0" Grid.Column="1" Background="#F1F4F6" BorderBrush="#D8DEE4"
+                            BorderThickness="0,0,0,1">
+                        <ItemsControl ItemsSource="{Binding Echelle}" Margin="0">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <Canvas Width="{Binding LargeurGraphe}" Height="30" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemContainerStyle>
+                                <Style TargetType="ContentPresenter">
+                                    <Setter Property="Canvas.Left" Value="{Binding X}" />
+                                    <Setter Property="Canvas.Top" Value="{Binding Y}" />
+                                </Style>
+                            </ItemsControl.ItemContainerStyle>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Texte}" FontSize="10" Foreground="#667" />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </Border>
+
+                    <ListBox Grid.Row="1" Grid.Column="0" ItemsSource="{Binding ToutesTaches}"
+                             SelectedItem="{Binding TacheSelectionnee, Mode=TwoWay}"
+                             Background="Transparent" BorderThickness="0" Padding="0"
+                             ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="ListBoxItem">
+                                <Setter Property="Height" Value="28" />
+                                <Setter Property="Padding" Value="0" />
+                                <Setter Property="Margin" Value="0" />
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                <Setter Property="VerticalContentAlignment" Value="Center" />
+                                <Setter Property="BorderThickness" Value="0,0,1,1" />
+                                <Setter Property="BorderBrush" Value="#EEF1F3" />
+                            </Style>
+                        </ListBox.ItemContainerStyle>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="6,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding Indentation}" Foreground="#9AA5B1" />
+                                        <TextBlock Text="{Binding Libelle}" Foreground="{Binding CouleurTexte}"
+                                                   FontWeight="{Binding PoidsTexte}" FontSize="12" />
+                                    </StackPanel>
+                                    <TextBlock Grid.Column="1" FontSize="10" Foreground="#899"
+                                               VerticalAlignment="Center" Margin="6,0"
+                                               Text="{Binding Tache.MargeTotale, StringFormat='marge {0} j'}" />
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+
+                    <ScrollViewer Grid.Row="1" Grid.Column="1"
+                                  HorizontalScrollBarVisibility="Auto"
+                                  VerticalScrollBarVisibility="Disabled">
+                        <ItemsControl ItemsSource="{Binding ToutesTaches}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Height="28"
+                                          Width="{Binding DataContext.LargeurGraphe, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                          Background="#FCFDFD">
+                                        <!-- Grille verticale partagée avec l'échelle du haut -->
+                                        <ItemsControl ItemsSource="{Binding DataContext.Grille, RelativeSource={RelativeSource AncestorType=ItemsControl}}">
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate><Canvas /></ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Line X1="{Binding X1}" Y1="0" X2="{Binding X2}" Y2="28"
+                                                          Stroke="#EEF1F3" StrokeThickness="1" />
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+
+                                        <!-- Barre : rouge sur le chemin critique, verte sinon -->
+                                        <Canvas IsHitTestVisible="False">
+                                            <Border Canvas.Left="{Binding BarreGauche}" Canvas.Top="7"
+                                                    Width="{Binding BarreLargeur}" Height="14"
+                                                    Background="{Binding CouleurBarre}" CornerRadius="3">
+                                                <Border.Style>
+                                                    <Style TargetType="Border">
+                                                        <Setter Property="BorderThickness" Value="0" />
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding EstSelectionnee}" Value="True">
+                                                                <Setter Property="BorderThickness" Value="2" />
+                                                                <Setter Property="BorderBrush" Value="#1B2733" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Border.Style>
+                                            </Border>
+                                        </Canvas>
+
+                                        <!-- Clic sur la barre : sélection synchronisée avec l'arbre -->
+                                        <Button Background="Transparent" BorderThickness="0" Padding="0"
+                                                Command="{Binding DataContext.SelectionnerTacheCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                CommandParameter="{Binding}">
+                                            <Button.ToolTip>
+                                                <ToolTip>
+                                                    <StackPanel>
+                                                        <TextBlock Text="{Binding Libelle}" FontWeight="SemiBold" />
+                                                        <TextBlock Text="{Binding Tache.DateDebutPrevue, StringFormat='Début : {0:dd/MM/yyyy}'}" />
+                                                        <TextBlock Text="{Binding Tache.DateFinPrevue, StringFormat='Fin : {0:dd/MM/yyyy}'}" />
+                                                        <TextBlock Text="{Binding Tache.MargeTotale, StringFormat='Marge totale : {0} jour(s)'}" />
+                                                        <TextBlock Text="Chemin critique"
+                                                                   Foreground="#C0392B" FontWeight="SemiBold"
+                                                                   Visibility="{Binding Tache.EstCheminCritique, Converter={StaticResource BoolVersVisibilite}}" />
+                                                    </StackPanel>
+                                                </ToolTip>
+                                            </Button.ToolTip>
+                                        </Button>
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </Grid>
+            </ScrollViewer>
+        </Border>
+
+        <!-- Légende -->
+        <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0,10,0,0">
+            <Rectangle Width="16" Height="8" Fill="#C0392B" RadiusX="2" RadiusY="2" Margin="0,0,6,0" />
+            <TextBlock Text="Chemin critique" FontSize="11" Margin="0,0,18,0" />
+            <Rectangle Width="16" Height="8" Fill="#2E7D6B" RadiusX="2" RadiusY="2" Margin="0,0,6,0" />
+            <TextBlock Text="Tâche non critique" FontSize="11" Margin="0,0,18,0" />
+            <TextBlock Text="{Binding DateDebutProjet, StringFormat='Début du projet : {0:dd/MM/yyyy}'}"
+                       FontSize="11" Foreground="#667" Margin="0,0,18,0" />
+            <TextBlock Text="{Binding DateFinProjet, StringFormat='Fin prévue : {0:dd/MM/yyyy}'}"
+                       FontSize="11" Foreground="#667" Margin="0,0,18,0" />
+            <TextBlock Text="{Binding DureeProjetJours, StringFormat='Durée : {0} jour(s)'}"
+                       FontSize="11" Foreground="#667" />
+        </StackPanel>
+    </Grid>
+</UserControl>

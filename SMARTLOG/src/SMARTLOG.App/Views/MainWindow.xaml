@@ -1,0 +1,200 @@
+<Window x:Class="Smartlog.App.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:Smartlog.App.ViewModels"
+        xmlns:views="clr-namespace:Smartlog.App.Views"
+        Title="SMARTLOG" Height="800" Width="1280"
+        WindowStartupLocation="CenterScreen"
+        Background="{StaticResource BrushFond}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="56" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="240" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <!-- Barre supérieure : recherche globale + bascule thème -->
+        <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
+                Background="{StaticResource BrushMenu}">
+            <DockPanel LastChildFill="True" Margin="16,0">
+                <TextBlock Text="SMARTLOG" Foreground="{StaticResource BrushTexteClair}"
+                           FontWeight="Bold" FontSize="18" VerticalAlignment="Center"
+                           DockPanel.Dock="Left" Margin="0,0,24,0" />
+                <Button Content="&#xE706;" FontFamily="Segoe MDL2 Assets" FontSize="16"
+                        ToolTip="Thème" DockPanel.Dock="Right" Width="36" Margin="8,0,0,0" />
+                <Grid DockPanel.Dock="Right" Width="36" Margin="8,0,0,0">
+                    <Button x:Name="BoutonNotifications" Content="&#xE91C;" FontFamily="Segoe MDL2 Assets"
+                            FontSize="16" Width="36"
+                            ToolTip="Notifications"
+                            Command="{Binding BasculerNotificationsCommand}" />
+                    <Border IsHitTestVisible="False" HorizontalAlignment="Right"
+                            VerticalAlignment="Top" Margin="0,-4,-4,0"
+                            Width="18" Height="18" CornerRadius="9" Background="#C0392B"
+                            Visibility="{Binding AAlertesNonLues, Converter={StaticResource BoolVersVisibilite}}">
+                        <TextBlock Text="{Binding NombreNotificationsNonLues}"
+                                   Foreground="White" FontSize="10" FontWeight="Bold"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                    <Popup x:Name="PanneauNotifications" StaysOpen="False"
+                           Placement="Bottom" PlacementTarget="{Binding ElementName=BoutonNotifications}"
+                           IsOpen="{Binding PanneauNotificationsOuvert, Mode=TwoWay}">
+                        <Border Width="400" MaxHeight="470" Background="White"
+                                BorderBrush="#D8DEE4" BorderThickness="1" CornerRadius="6"
+                                Padding="12">
+                            <DockPanel>
+                                <DockPanel DockPanel.Dock="Top" Margin="0,0,0,8">
+                                    <TextBlock Text="Notifications" FontSize="15" FontWeight="SemiBold"
+                                               VerticalAlignment="Center" />
+                                    <Button Content="Tout marquer comme lu" DockPanel.Dock="Right"
+                                            Height="26" FontSize="11"
+                                            Command="{Binding MarquerToutesNotificationsLuesCommand}" />
+                                </DockPanel>
+                                <Button Content="Ouvrir le centre d'alertes" DockPanel.Dock="Bottom"
+                                        Height="30" Margin="0,8,0,0"
+                                        Command="{Binding OuvrirCentreAlertesCommand}" />
+                                <ListBox ItemsSource="{Binding DernieresNotifications}"
+                                         BorderThickness="0" Background="Transparent"
+                                         HorizontalContentAlignment="Stretch">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border BorderBrush="#E4E8EC" BorderThickness="0,0,0,1"
+                                                    Padding="0,6">
+                                                <DockPanel>
+                                                    <Button Content="Vue" Width="44" Height="24"
+                                                            DockPanel.Dock="Right" Margin="6,0,0,0"
+                                                            FontSize="10"
+                                                            Command="{Binding DataContext.OuvrirNotificationCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
+                                                            CommandParameter="{Binding}" />
+                                                    <StackPanel>
+                                                        <TextBlock Text="{Binding Titre}" FontWeight="SemiBold"
+                                                                   FontSize="12" TextTrimming="CharacterEllipsis" />
+                                                        <TextBlock Text="{Binding Message}" FontSize="11"
+                                                                   Foreground="#667" TextTrimming="CharacterEllipsis" />
+                                                        <TextBlock Text="{Binding DateEcheance, StringFormat=Échéance : dd/MM/yyyy}"
+                                                                   FontSize="10" Foreground="#C0392B" />
+                                                    </StackPanel>
+                                                </DockPanel>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                            </DockPanel>
+                        </Border>
+                    </Popup>
+                </Grid>
+                <TextBox DockPanel.Dock="Left" Width="360" Height="32"
+                         VerticalAlignment="Center"
+                         Tag="Rechercher un projet, un document, une référence..." />
+            </DockPanel>
+        </Border>
+
+        <!-- Menu latéral -->
+        <Border Grid.Row="1" Grid.Column="0" Background="{StaticResource BrushMenu}">
+            <ListBox ItemsSource="{Binding ElementsMenu}"
+                     SelectedItem="{Binding ElementSelectionne}"
+                     Background="Transparent" BorderThickness="0"
+                     Margin="0,8,0,0">
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        <Setter Property="Padding" Value="0" />
+                        <Setter Property="Margin" Value="8,2" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ListBoxItem">
+                                    <Border x:Name="FondElement" Background="Transparent" CornerRadius="6"
+                                            Padding="10,11">
+                                        <ContentPresenter VerticalAlignment="Center" />
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter TargetName="FondElement" Property="Background" Value="#28394A" />
+                                        </Trigger>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter TargetName="FondElement" Property="Background"
+                                                    Value="{StaticResource BrushAccent}" />
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ListBox.ItemContainerStyle>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding Glyphe}" FontFamily="Segoe MDL2 Assets" FontSize="17"
+                                       Foreground="#CBD9E4" Width="24" TextAlignment="Center"
+                                       VerticalAlignment="Center" Margin="0,0,10,0" />
+                            <TextBlock Text="{Binding Libelle}" Foreground="{StaticResource BrushTexteClair}"
+                                       FontSize="13" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Border>
+
+        <!-- Zone centrale : contenu du module sélectionné -->
+        <Border Grid.Row="1" Grid.Column="1" Margin="16" Background="White"
+                CornerRadius="6">
+            <Grid>
+                <TextBlock Text="{Binding ElementSelectionne.Libelle}"
+                           FontSize="22" FontWeight="SemiBold"
+                           Margin="24" VerticalAlignment="Top" />
+                <ContentControl Content="{Binding VueCourante}" Margin="24,56,24,24">
+                    <ContentControl.Resources>
+                        <DataTemplate DataType="{x:Type vm:TableauDeBoardViewModel}">
+                            <views:VueTableauDeBoard />
+                        </DataTemplate>
+                        <DataTemplate DataType="{x:Type vm:ProjetsViewModel}">
+                            <views:VueProjets />
+                        </DataTemplate>
+                        <DataTemplate DataType="{x:Type vm:FicheProjetViewModel}">
+                            <views:VueFicheProjet />
+                        </DataTemplate>
+                        <DataTemplate DataType="{x:Type vm:MarchesViewModel}">
+                            <views:VueMarches />
+                        </DataTemplate>
+                        <DataTemplate DataType="{x:Type vm:AvenantsViewModel}">
+                            <views:VueAvenants />
+                        </DataTemplate>
+                        <DataTemplate DataType="{x:Type vm:GedViewModel}">
+                            <views:VueGed />
+                        </DataTemplate>
+                        <DataTemplate DataType="{x:Type vm:AttachementsViewModel}">
+                            <views:VueAttachements />
+                        </DataTemplate>
+                        <DataTemplate DataType="{x:Type vm:FinancesViewModel}">
+                            <views:VueFinances />
+                        </DataTemplate>
+                        <DataTemplate DataType="{x:Type vm:PlanningViewModel}">
+                            <views:VuePlanning />
+                        </DataTemplate>
+                        <DataTemplate DataType="{x:Type vm:ReservesViewModel}">
+                            <views:VueReserves />
+                        </DataTemplate>
+                        <DataTemplate DataType="{x:Type vm:CourriersViewModel}">
+                            <views:VueCourriers />
+                        </DataTemplate>
+                        <DataTemplate DataType="{x:Type vm:AlertesViewModel}">
+                            <views:VueAlertes />
+                        </DataTemplate>
+                        <DataTemplate DataType="{x:Type vm:AssistantIaViewModel}">
+                            <views:VueAssistantIa />
+                        </DataTemplate>
+                        <DataTemplate DataType="{x:Type vm:SauvegardeViewModel}">
+                            <views:VueSauvegarde />
+                        </DataTemplate>
+                    </ContentControl.Resources>
+                </ContentControl>
+                <TextBlock Text="Le module « Suivi technique » ne dispose pas encore de son propre écran. Les autres modules sont disponibles via le menu."
+                           TextWrapping="Wrap" Margin="24,64,24,24"
+                           Foreground="Gray" VerticalAlignment="Top"
+                           Visibility="{Binding AfficherPlaceholder, Converter={StaticResource BoolVersVisibilite}}" />
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

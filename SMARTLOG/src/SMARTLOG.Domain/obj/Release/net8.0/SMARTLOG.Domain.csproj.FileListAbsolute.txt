@@ -1,0 +1,11 @@
+C:\Users\EUROGEN\Desktop\SmartLog\SMARTLOG\src\SMARTLOG.Domain\bin\Release\net8.0\SMARTLOG.Domain.deps.json
+C:\Users\EUROGEN\Desktop\SmartLog\SMARTLOG\src\SMARTLOG.Domain\bin\Release\net8.0\SMARTLOG.Domain.dll
+C:\Users\EUROGEN\Desktop\SmartLog\SMARTLOG\src\SMARTLOG.Domain\bin\Release\net8.0\SMARTLOG.Domain.pdb
+C:\Users\EUROGEN\Desktop\SmartLog\SMARTLOG\src\SMARTLOG.Domain\obj\Release\net8.0\SMARTLOG.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\EUROGEN\Desktop\SmartLog\SMARTLOG\src\SMARTLOG.Domain\obj\Release\net8.0\SMARTLOG.Domain.AssemblyInfoInputs.cache
+C:\Users\EUROGEN\Desktop\SmartLog\SMARTLOG\src\SMARTLOG.Domain\obj\Release\net8.0\SMARTLOG.Domain.AssemblyInfo.cs
+C:\Users\EUROGEN\Desktop\SmartLog\SMARTLOG\src\SMARTLOG.Domain\obj\Release\net8.0\SMARTLOG.Domain.csproj.CoreCompileInputs.cache
+C:\Users\EUROGEN\Desktop\SmartLog\SMARTLOG\src\SMARTLOG.Domain\obj\Release\net8.0\SMARTLOG.Domain.dll
+C:\Users\EUROGEN\Desktop\SmartLog\SMARTLOG\src\SMARTLOG.Domain\obj\Release\net8.0\refint\SMARTLOG.Domain.dll
+C:\Users\EUROGEN\Desktop\SmartLog\SMARTLOG\src\SMARTLOG.Domain\obj\Release\net8.0\SMARTLOG.Domain.pdb
+C:\Users\EUROGEN\Desktop\SmartLog\SMARTLOG\src\SMARTLOG.Domain\obj\Release\net8.0\ref\SMARTLOG.Domain.dll

@@ -1,0 +1,89 @@
+<UserControl x:Class="Smartlog.App.Views.VueAlertes"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <DockPanel Grid.Row="0" Margin="0,0,0,12">
+            <TextBlock Text="Projet :" VerticalAlignment="Center" Margin="0,0,8,0" />
+            <ComboBox Width="300" Height="30" DockPanel.Dock="Left"
+                      ItemsSource="{Binding Projets}" DisplayMemberPath="Intitule"
+                      SelectedItem="{Binding ProjetSelectionne, Mode=TwoWay}"
+                      Margin="0,0,12,0" />
+            <TextBlock Text="Horizon (jours) :" VerticalAlignment="Center" Margin="0,0,8,0" />
+            <TextBox Width="60" Height="30" DockPanel.Dock="Left"
+                     Text="{Binding HorizonTexte, UpdateSourceTrigger=PropertyChanged}"
+                     Margin="0,0,12,0" />
+            <Button Content="Analyser" Width="100" Height="30" DockPanel.Dock="Right"
+                    Command="{Binding AnalyserCommand}" />
+            <Button Content="Actualiser" Width="100" Height="30" DockPanel.Dock="Right"
+                    Command="{Binding ActualiserCommand}" Margin="0,0,8,0" />
+            <TextBlock Text="{Binding Message}" VerticalAlignment="Center" Margin="16,0,0,0"
+                       Foreground="{StaticResource BrushAccent}" TextTrimming="CharacterEllipsis" />
+        </DockPanel>
+
+        <UniformGrid Grid.Row="1" Columns="3" Margin="0,0,0,12">
+            <Border BorderBrush="#D8DEE4" BorderThickness="1" CornerRadius="4" Padding="12" Margin="0,0,8,0">
+                <StackPanel>
+                    <TextBlock Text="Alertes actives" FontSize="12" Foreground="#667" />
+                    <TextBlock Text="{Binding Alertes.Count}" FontSize="20" FontWeight="SemiBold" />
+                </StackPanel>
+            </Border>
+            <Border BorderBrush="#D8DEE4" BorderThickness="1" CornerRadius="4" Padding="12" Margin="4,0">
+                <StackPanel>
+                    <TextBlock Text="Non lues" FontSize="12" Foreground="#D97706" />
+                    <TextBlock Text="{Binding NombreNonLues}" FontSize="20" FontWeight="SemiBold" Foreground="#D97706" />
+                </StackPanel>
+            </Border>
+            <Border BorderBrush="#D8DEE4" BorderThickness="1" CornerRadius="4" Padding="12" Margin="8,0,0,0">
+                <StackPanel>
+                    <TextBlock Text="En retard" FontSize="12" Foreground="#C0392B" />
+                    <TextBlock Text="{Binding NombreEnRetard}" FontSize="20" FontWeight="SemiBold" Foreground="#C0392B" />
+                </StackPanel>
+            </Border>
+        </UniformGrid>
+
+        <DataGrid Grid.Row="2" ItemsSource="{Binding Alertes}"
+                  SelectedItem="{Binding AlerteSelectionnee, Mode=TwoWay}"
+                  AutoGenerateColumns="False" IsReadOnly="True"
+                  CanUserAddRows="False" SelectionMode="Single" SelectionUnit="FullRow"
+                  GridLinesVisibility="Horizontal" HeadersVisibility="Column"
+                  AlternatingRowBackground="#F7F9FA" FontSize="12">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Priorité" Binding="{Binding PrioriteLibelle}" Width="80" />
+                <DataGridTextColumn Header="Origine" Binding="{Binding SourceTypeLibelle}" Width="150" />
+                <DataGridTextColumn Header="Titre" Binding="{Binding Titre}" Width="*" />
+                <DataGridTextColumn Header="Projet" Binding="{Binding ProjetCode}" Width="110" />
+                <DataGridTextColumn Header="Échéance" Binding="{Binding DateEcheance, StringFormat=dd/MM/yyyy}" Width="105" />
+                <DataGridTextColumn Header="Jours" Binding="{Binding JoursRestants, StringFormat='{}{0} j'}" Width="70" />
+                <DataGridCheckBoxColumn Header="Lue" Binding="{Binding EstLue}" Width="55" />
+            </DataGrid.Columns>
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding EstEnRetard}" Value="True">
+                            <Setter Property="Background" Value="#FDEDEC" />
+                            <Setter Property="Foreground" Value="#C0392B" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.RowStyle>
+        </DataGrid>
+
+        <DockPanel Grid.Row="3" Margin="0,10,0,0">
+            <TextBlock Text="{Binding AlerteSelectionnee.Message}" TextWrapping="Wrap"
+                       MaxWidth="900" Foreground="#445" Margin="0,0,12,0" />
+            <Button Content="Ouvrir la source" Width="130" Height="28" DockPanel.Dock="Right"
+                    Command="{Binding OuvrirSourceCommand}" />
+            <Button Content="Marquer comme lue" Width="145" Height="28" DockPanel.Dock="Right"
+                    Command="{Binding MarquerLueCommand}" Margin="0,0,8,0" />
+            <Button Content="Tout marquer comme lu" Width="165" Height="28" DockPanel.Dock="Right"
+                    Command="{Binding MarquerToutesLuesCommand}" Margin="0,0,8,0" />
+        </DockPanel>
+    </Grid>
+</UserControl>

@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "eWpWiOIivoA=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\EUROGEN\\Desktop\\SmartLog\\SMARTLOG\\src\\SMARTLOG.Domain\\SMARTLOG.Domain.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\EUROGEN\\.nuget\\packages\\microsoft.netcore.app.ref\\8.0.34\\microsoft.netcore.app.ref.8.0.34.nupkg.sha512",
+    "C:\\Users\\EUROGEN\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\8.0.34\\microsoft.windowsdesktop.app.ref.8.0.34.nupkg.sha512",
+    "C:\\Users\\EUROGEN\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\8.0.34\\microsoft.aspnetcore.app.ref.8.0.34.nupkg.sha512"
+  ],
+  "logs": []
+}

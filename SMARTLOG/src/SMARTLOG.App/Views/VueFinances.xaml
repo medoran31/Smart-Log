@@ -1,0 +1,263 @@
+<UserControl x:Class="Smartlog.App.Views.VueFinances"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- Sélection du projet -->
+        <DockPanel Grid.Row="0" Margin="0,0,0,12">
+            <TextBlock Text="Projet :" VerticalAlignment="Center" Margin="0,0,8,0" />
+            <ComboBox Width="300" Height="30" DockPanel.Dock="Left"
+                      ItemsSource="{Binding Projets}" DisplayMemberPath="Intitule"
+                      SelectedItem="{Binding ProjetSelectionne, Mode=TwoWay}"
+                      Margin="0,0,12,0" />
+            <Button Content="Actualiser" Width="100" Height="30" DockPanel.Dock="Right"
+                    Command="{Binding ActualiserCommand}" />
+            <TextBlock Text="{Binding Message}" VerticalAlignment="Center" Margin="16,0,0,0"
+                       Foreground="{StaticResource BrushAccent}" TextTrimming="CharacterEllipsis" />
+        </DockPanel>
+
+        <!-- Indicateurs clés -->
+        <UniformGrid Grid.Row="1" Columns="4" Margin="0,0,0,12">
+            <Border BorderBrush="#D8DEE4" BorderThickness="1" CornerRadius="4" Padding="12" Margin="0,0,8,0">
+                <StackPanel>
+                    <TextBlock Text="Montant contractuel" FontSize="12" Foreground="#667" />
+                    <TextBlock Text="{Binding MontantContractuel, StringFormat=N2}" FontSize="20"
+                               FontWeight="SemiBold" Foreground="#1B2733" />
+                </StackPanel>
+            </Border>
+            <Border BorderBrush="#D8DEE4" BorderThickness="1" CornerRadius="4" Padding="12" Margin="4,0">
+                <StackPanel>
+                    <TextBlock Text="Engagé" FontSize="12" Foreground="#2E7D6B" />
+                    <TextBlock Text="{Binding TotalEngage, StringFormat=N2}" FontSize="20"
+                               FontWeight="SemiBold" Foreground="#2E7D6B" />
+                </StackPanel>
+            </Border>
+            <Border BorderBrush="#D8DEE4" BorderThickness="1" CornerRadius="4" Padding="12" Margin="4,0">
+                <StackPanel>
+                    <TextBlock Text="Payé" FontSize="12" Foreground="#2F6FB5" />
+                    <TextBlock Text="{Binding TotalPaye, StringFormat=N2}" FontSize="20"
+                               FontWeight="SemiBold" Foreground="#2F6FB5" />
+                </StackPanel>
+            </Border>
+            <Border BorderBrush="#D8DEE4" BorderThickness="1" CornerRadius="4" Padding="12" Margin="8,0,0,0">
+                <StackPanel>
+                    <TextBlock Text="Restant dû" FontSize="12" Foreground="#D97706" />
+                    <TextBlock Text="{Binding TotalRestantDu, StringFormat=N2}" FontSize="20"
+                               FontWeight="SemiBold" Foreground="#D97706" />
+                </StackPanel>
+            </Border>
+        </UniformGrid>
+
+        <!-- Graphique d'évolution dessiné en WPF natif -->
+        <Border Grid.Row="2" BorderBrush="#D8DEE4" BorderThickness="1" CornerRadius="4"
+                Padding="12" MinHeight="290">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <DockPanel Grid.Row="0" Margin="0,0,0,8">
+                    <TextBlock Text="Évolution financière dans le temps" FontWeight="SemiBold" />
+                    <TextBlock Text="{Binding TauxAvancement, StringFormat='Avancement : {0:P1}'}"
+                               DockPanel.Dock="Right" Foreground="#667" />
+                </DockPanel>
+
+                <Viewbox Grid.Row="1" Stretch="Uniform" MinHeight="250">
+                    <Grid Width="700" Height="270" Background="#FCFDFD">
+                        <!-- Grille et axes -->
+                        <ItemsControl ItemsSource="{Binding GrilleHorizontale}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate><Canvas Width="700" Height="270" /></ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Line X1="{Binding X1}" Y1="{Binding Y1}" X2="{Binding X2}" Y2="{Binding Y2}"
+                                          Stroke="#E3E8EC" StrokeThickness="1" />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <!-- Libellés de l'axe vertical (montants) -->
+                        <ItemsControl ItemsSource="{Binding LibellesVerticaux}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate><Canvas Width="700" Height="270" /></ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemContainerStyle>
+                                <Style TargetType="ContentPresenter">
+                                    <Setter Property="Canvas.Left" Value="{Binding X}" />
+                                    <Setter Property="Canvas.Top" Value="{Binding Y}" />
+                                </Style>
+                            </ItemsControl.ItemContainerStyle>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Texte}" FontSize="10" Foreground="#667" />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <!-- Libellés de l'axe horizontal (périodes) -->
+                        <ItemsControl ItemsSource="{Binding LibellesHorizontaux}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate><Canvas Width="700" Height="270" /></ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemContainerStyle>
+                                <Style TargetType="ContentPresenter">
+                                    <Setter Property="Canvas.Left" Value="{Binding X}" />
+                                    <Setter Property="Canvas.Top" Value="{Binding Y}" />
+                                </Style>
+                            </ItemsControl.ItemContainerStyle>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Texte}" FontSize="10" Foreground="#667" />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <!-- Série : montant engagé (vert) -->
+                        <ItemsControl ItemsSource="{Binding SegmentsEngages}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate><Canvas Width="700" Height="270" /></ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Line X1="{Binding X1}" Y1="{Binding Y1}" X2="{Binding X2}" Y2="{Binding Y2}"
+                                          Stroke="#2E7D6B" StrokeThickness="2.5" />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        <ItemsControl ItemsSource="{Binding PointsEngages}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate><Canvas Width="700" Height="270" /></ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemContainerStyle>
+                                <Style TargetType="ContentPresenter">
+                                    <Setter Property="Canvas.Left" Value="{Binding X}" />
+                                    <Setter Property="Canvas.Top" Value="{Binding Y}" />
+                                </Style>
+                            </ItemsControl.ItemContainerStyle>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Ellipse Width="8" Height="8" Margin="-4,-4,0,0" Fill="#2E7D6B" />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <!-- Série : montant payé (bleu) -->
+                        <ItemsControl ItemsSource="{Binding SegmentsPayes}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate><Canvas Width="700" Height="270" /></ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Line X1="{Binding X1}" Y1="{Binding Y1}" X2="{Binding X2}" Y2="{Binding Y2}"
+                                          Stroke="#2F6FB5" StrokeThickness="2.5" />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        <ItemsControl ItemsSource="{Binding PointsPayes}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate><Canvas Width="700" Height="270" /></ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemContainerStyle>
+                                <Style TargetType="ContentPresenter">
+                                    <Setter Property="Canvas.Left" Value="{Binding X}" />
+                                    <Setter Property="Canvas.Top" Value="{Binding Y}" />
+                                </Style>
+                            </ItemsControl.ItemContainerStyle>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Ellipse Width="8" Height="8" Margin="-4,-4,0,0" Fill="#2F6FB5" />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <!-- Série : restant dû (orange) -->
+                        <ItemsControl ItemsSource="{Binding SegmentsRestant}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate><Canvas Width="700" Height="270" /></ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Line X1="{Binding X1}" Y1="{Binding Y1}" X2="{Binding X2}" Y2="{Binding Y2}"
+                                          Stroke="#D97706" StrokeThickness="2.5" StrokeDashArray="4,2" />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        <ItemsControl ItemsSource="{Binding PointsRestant}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate><Canvas Width="700" Height="270" /></ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemContainerStyle>
+                                <Style TargetType="ContentPresenter">
+                                    <Setter Property="Canvas.Left" Value="{Binding X}" />
+                                    <Setter Property="Canvas.Top" Value="{Binding Y}" />
+                                </Style>
+                            </ItemsControl.ItemContainerStyle>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Ellipse Width="8" Height="8" Margin="-4,-4,0,0" Fill="#D97706" />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </Grid>
+                </Viewbox>
+
+                <!-- Légende -->
+                <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,8,0,0">
+                    <Rectangle Width="14" Height="3" Fill="#2E7D6B" Margin="0,0,6,0" />
+                    <TextBlock Text="Engagé" FontSize="11" Margin="0,0,16,0" />
+                    <Rectangle Width="14" Height="3" Fill="#2F6FB5" Margin="0,0,6,0" />
+                    <TextBlock Text="Payé" FontSize="11" Margin="0,0,16,0" />
+                    <Rectangle Width="14" Height="3" Fill="#D97706" Margin="0,0,6,0" />
+                    <TextBlock Text="Restant dû" FontSize="11" />
+                    <TextBlock Text="Échelle maximale :" FontSize="11" Foreground="#667"
+                               Margin="24,0,6,0" />
+                    <TextBlock Text="{Binding MaximumAxeLibelle}" FontSize="11" Foreground="#667" />
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Situations et changement de statut -->
+        <Border Grid.Row="3" BorderBrush="#D8DEE4" BorderThickness="1" CornerRadius="4"
+                Padding="12" Margin="0,12,0,0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <DockPanel Grid.Row="0" Margin="0,0,0,8">
+                    <TextBlock Text="Situations" FontWeight="SemiBold" />
+                    <Button Content="Marquer émise" Width="130" Height="28" DockPanel.Dock="Right"
+                            Command="{Binding MarquerEmiseCommand}" Margin="8,0,0,0" />
+                    <Button Content="Marquer payée" Width="130" Height="28" DockPanel.Dock="Right"
+                            Command="{Binding MarquerPayeeCommand}" />
+                </DockPanel>
+                <DataGrid Grid.Row="1" ItemsSource="{Binding Situations}"
+                          SelectedItem="{Binding SituationSelectionnee, Mode=TwoWay}"
+                          AutoGenerateColumns="False" IsReadOnly="True"
+                          CanUserAddRows="False" SelectionMode="Single" SelectionUnit="FullRow"
+                          Height="180" GridLinesVisibility="Horizontal" HeadersVisibility="Column"
+                          AlternatingRowBackground="#F7F9FA" FontSize="12">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Période" Binding="{Binding Periode}" Width="80" />
+                        <DataGridTextColumn Header="Type" Binding="{Binding TypeLibelle}" Width="100" />
+                        <DataGridTextColumn Header="Statut" Binding="{Binding Statut}" Width="90" />
+                        <DataGridTextColumn Header="Période (DA)" Binding="{Binding MontantPeriode, StringFormat=N2}" Width="100" />
+                        <DataGridTextColumn Header="Cumul (DA)" Binding="{Binding MontantCumule, StringFormat=N2}" Width="100" />
+                        <DataGridTextColumn Header="Retenue" Binding="{Binding RetenueGarantie, StringFormat=N2}" Width="90" />
+                        <DataGridTextColumn Header="Avance" Binding="{Binding Avance, StringFormat=N2}" Width="90" />
+                        <DataGridTextColumn Header="Pénalités" Binding="{Binding Penalites, StringFormat=N2}" Width="90" />
+                        <DataGridTextColumn Header="Net à payer" Binding="{Binding NetAPayer, StringFormat=N2}" Width="*" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

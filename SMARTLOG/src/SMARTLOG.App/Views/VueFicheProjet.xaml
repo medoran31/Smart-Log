@@ -1,0 +1,170 @@
+<UserControl x:Class="Smartlog.App.Views.VueFicheProjet"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid>
+        <TextBlock Text="Sélectionnez un projet dans « Mes projets » pour afficher sa fiche."
+                   FontSize="15" Foreground="Gray" VerticalAlignment="Center"
+                   HorizontalAlignment="Center" TextWrapping="Wrap"
+                   Visibility="{Binding EstVide, Converter={StaticResource BoolVersVisibilite}}" />
+
+        <Grid Visibility="{Binding EstCharge, Converter={StaticResource BoolVersVisibilite}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <DockPanel Grid.Row="0" Margin="0,0,0,12" LastChildFill="False">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="{Binding Projet.Code}" FontWeight="Bold" FontSize="17" />
+                    <TextBlock Text=" — " FontWeight="Bold" FontSize="17" />
+                    <TextBlock Text="{Binding Projet.Intitule}" FontWeight="Bold" FontSize="17" />
+                </StackPanel>
+                <Button Content="Retour à la liste" DockPanel.Dock="Right"
+                        Command="{Binding RetourALaListeCommand}" Padding="12,4" />
+                <Button Content="Supprimer le projet" DockPanel.Dock="Right"
+                        Command="{Binding SupprimerCommand}" Padding="12,4" Margin="0,0,8,0"
+                        Background="#FDECEC" Foreground="#A4262C" BorderBrush="#A4262C"
+                        ToolTip="Suppression définitive du projet et de toutes ses données" />
+            </DockPanel>
+
+            <TabControl Grid.Row="1">
+                <!-- Onglet Identification -->
+                <TabItem Header="Identification">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <Grid Margin="12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="210" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="36" />
+                                <RowDefinition Height="36" />
+                                <RowDefinition Height="36" />
+                                <RowDefinition Height="36" />
+                                <RowDefinition Height="36" />
+                                <RowDefinition Height="36" />
+                                <RowDefinition Height="36" />
+                                <RowDefinition Height="36" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Code" VerticalAlignment="Center" />
+                            <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Projet.Code}"
+                                     IsReadOnly="True" Background="#F0F0F0" Height="28" />
+
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Intitulé" VerticalAlignment="Center" />
+                            <TextBox x:Name="IntituleProjet" Grid.Row="1" Grid.Column="1" Text="{Binding Intitule, UpdateSourceTrigger=PropertyChanged}" Height="28" />
+
+                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Localisation" VerticalAlignment="Center" />
+                            <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Localisation, UpdateSourceTrigger=PropertyChanged}" Height="28" />
+
+                            <TextBlock Grid.Row="3" Grid.Column="0" Text="Nature des travaux" VerticalAlignment="Center" />
+                            <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding NatureTravaux, UpdateSourceTrigger=PropertyChanged}" Height="28" />
+
+                            <TextBlock Grid.Row="4" Grid.Column="0" Text="Maître d'ouvrage" VerticalAlignment="Center" />
+                            <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding Projet.MaitreOuvrage}"
+                                     IsReadOnly="True" Background="#F0F0F0" Height="28" />
+
+                            <TextBlock Grid.Row="5" Grid.Column="0" Text="Maître d'œuvre" VerticalAlignment="Center" />
+                            <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding Projet.MaitreOeuvre}"
+                                     IsReadOnly="True" Background="#F0F0F0" Height="28" />
+
+                            <TextBlock Grid.Row="6" Grid.Column="0" Text="Entreprise" VerticalAlignment="Center" />
+                            <TextBox Grid.Row="6" Grid.Column="1" Text="{Binding Projet.Entreprise}"
+                                     IsReadOnly="True" Background="#F0F0F0" Height="28" />
+
+                            <TextBlock Grid.Row="7" Grid.Column="0" Text="Montant initial" VerticalAlignment="Center" />
+                            <TextBox Grid.Row="7" Grid.Column="1"
+                                     Text="{Binding Projet.MontantInitial, StringFormat={}{0:N2} DA}"
+                                     IsReadOnly="True" Background="#F0F0F0" Height="28" />
+
+                            <StackPanel Grid.Row="8" Grid.Column="1" Orientation="Horizontal" Margin="0,12,0,0">
+                                <TextBlock Text="Montant actualisé (calculé) :" VerticalAlignment="Center" />
+                                <TextBox x:Name="MontantActualiseProjet" Text="{Binding Projet.MontantActualise, StringFormat={}{0:N2} DA}"
+                                         IsReadOnly="True" Background="#E8F0EC" FontWeight="SemiBold"
+                                         Width="180" Height="28" Margin="8,0,0,0" />
+                            </StackPanel>
+                        </Grid>
+                    </ScrollViewer>
+                </TabItem>
+
+                <!-- Onglet Dates clés -->
+                <TabItem Header="Dates clés">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <Grid Margin="12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="230" />
+                                <ColumnDefinition Width="260" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="40" />
+                                <RowDefinition Height="40" />
+                                <RowDefinition Height="40" />
+                                <RowDefinition Height="40" />
+                                <RowDefinition Height="40" />
+                                <RowDefinition Height="40" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Date de notification" VerticalAlignment="Center" />
+                            <DatePicker Grid.Row="0" Grid.Column="1" SelectedDate="{Binding DateNotification}" />
+
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Date de commencement" VerticalAlignment="Center" />
+                            <DatePicker Grid.Row="1" Grid.Column="1" SelectedDate="{Binding DateCommencement}" />
+
+                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Délai contractuel (jours)" VerticalAlignment="Center" />
+                            <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Projet.DelaiContractuelJours}"
+                                     IsReadOnly="True" Background="#F0F0F0" Height="28" />
+
+                            <TextBlock Grid.Row="3" Grid.Column="0" Text="Délai actualisé (calculé)" VerticalAlignment="Center" />
+                            <TextBox x:Name="DelaiActualiseProjet" Grid.Row="3" Grid.Column="1" Text="{Binding Projet.DelaiActualiseJours}"
+                                     IsReadOnly="True" Background="#E8F0EC" FontWeight="SemiBold" Height="28" />
+
+                            <TextBlock Grid.Row="4" Grid.Column="0" Text="Fin prévisionnelle (calculée)" VerticalAlignment="Center" />
+                            <TextBox Grid.Row="4" Grid.Column="1"
+                                     Text="{Binding Projet.DatePrevisionnelleAchevement, StringFormat={}{0:dd/MM/yyyy}}"
+                                     IsReadOnly="True" Background="#E8F0EC" Height="28" />
+
+                            <TextBlock Grid.Row="5" Grid.Column="0" Text="Fin réelle" VerticalAlignment="Center" />
+                            <TextBox Grid.Row="5" Grid.Column="1"
+                                     Text="{Binding Projet.DateReelleAchevement, StringFormat={}{0:dd/MM/yyyy}}"
+                                     IsReadOnly="True" Background="#F0F0F0" Height="28" />
+
+                            <StackPanel Grid.Row="0" Grid.Column="2" Grid.RowSpan="3" Margin="24,0,0,0">
+                                <TextBlock Text="Statut" Margin="0,0,0,6" />
+                                <ComboBox x:Name="StatutProjet" ItemsSource="{Binding OptionsStatut}"
+                                          SelectedItem="{Binding StatutSelectionne, Mode=TwoWay}"
+                                          DisplayMemberPath="Libelle" Width="180" />
+                                <Button Content="Changer le statut" Command="{Binding ChangerStatutCommand}"
+                                        Width="180" Margin="0,8,0,0" Padding="8,4" />
+                            </StackPanel>
+
+                            <Button Grid.Row="6" Grid.Column="1" Content="Enregistrer les modifications"
+                                    Command="{Binding EnregistrerCommand}" Margin="0,12,0,0" Padding="12,6" />
+                        </Grid>
+                    </ScrollViewer>
+                </TabItem>
+
+                <!-- Onglet Historique -->
+                <TabItem Header="Historique">
+                    <DataGrid x:Name="HistoriqueProjet" ItemsSource="{Binding Historique}"
+                              AutoGenerateColumns="False"
+                              IsReadOnly="True"
+                              CanUserAddRows="False"
+                              GridLinesVisibility="Horizontal"
+                              HeadersVisibility="Column"
+                              FontSize="12">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Date" Binding="{Binding DateAction, StringFormat={}{0:dd/MM/yyyy HH:mm}}" Width="160" />
+                            <DataGridTextColumn Header="Action" Binding="{Binding ActionLibelle}" Width="220" />
+                            <DataGridTextColumn Header="Utilisateur" Binding="{Binding Utilisateur}" Width="130" />
+                            <DataGridTextColumn Header="Valeur avant" Binding="{Binding ValeurAvantJson}" Width="*" />
+                            <DataGridTextColumn Header="Valeur après" Binding="{Binding ValeurApresJson}" Width="*" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </TabItem>
+            </TabControl>
+        </Grid>
+    </Grid>
+</UserControl>

@@ -1,0 +1,17 @@
+C:\Users\EUROGEN\Desktop\SmartLog\SMARTLOG\src\SMARTLOG.Services\bin\Debug\net8.0\SMARTLOG.Services.deps.json
+C:\Users\EUROGEN\Desktop\SmartLog\SMARTLOG\src\SMARTLOG.Services\bin\Debug\net8.0\SMARTLOG.Services.dll
+C:\Users\EUROGEN\Desktop\SmartLog\SMARTLOG\src\SMARTLOG.Services\bin\Debug\net8.0\SMARTLOG.Services.pdb
+C:\Users\EUROGEN\Desktop\SmartLog\SMARTLOG\src\SMARTLOG.Services\bin\Debug\net8.0\SMARTLOG.Data.dll
+C:\Users\EUROGEN\Desktop\SmartLog\SMARTLOG\src\SMARTLOG.Services\bin\Debug\net8.0\SMARTLOG.Domain.dll
+C:\Users\EUROGEN\Desktop\SmartLog\SMARTLOG\src\SMARTLOG.Services\bin\Debug\net8.0\SMARTLOG.Domain.pdb
+C:\Users\EUROGEN\Desktop\SmartLog\SMARTLOG\src\SMARTLOG.Services\bin\Debug\net8.0\SMARTLOG.Data.pdb
+C:\Users\EUROGEN\Desktop\SmartLog\SMARTLOG\src\SMARTLOG.Services\obj\Debug\net8.0\SMARTLOG.Services.csproj.AssemblyReference.cache
+C:\Users\EUROGEN\Desktop\SmartLog\SMARTLOG\src\SMARTLOG.Services\obj\Debug\net8.0\SMARTLOG.Services.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\EUROGEN\Desktop\SmartLog\SMARTLOG\src\SMARTLOG.Services\obj\Debug\net8.0\SMARTLOG.Services.AssemblyInfoInputs.cache
+C:\Users\EUROGEN\Desktop\SmartLog\SMARTLOG\src\SMARTLOG.Services\obj\Debug\net8.0\SMARTLOG.Services.AssemblyInfo.cs
+C:\Users\EUROGEN\Desktop\SmartLog\SMARTLOG\src\SMARTLOG.Services\obj\Debug\net8.0\SMARTLOG.Services.csproj.CoreCompileInputs.cache
+C:\Users\EUROGEN\Desktop\SmartLog\SMARTLOG\src\SMARTLOG.Services\obj\Debug\net8.0\SMARTLOG.1BA7FDB4.Up2Date
+C:\Users\EUROGEN\Desktop\SmartLog\SMARTLOG\src\SMARTLOG.Services\obj\Debug\net8.0\SMARTLOG.Services.dll
+C:\Users\EUROGEN\Desktop\SmartLog\SMARTLOG\src\SMARTLOG.Services\obj\Debug\net8.0\refint\SMARTLOG.Services.dll
+C:\Users\EUROGEN\Desktop\SmartLog\SMARTLOG\src\SMARTLOG.Services\obj\Debug\net8.0\SMARTLOG.Services.pdb
+C:\Users\EUROGEN\Desktop\SmartLog\SMARTLOG\src\SMARTLOG.Services\obj\Debug\net8.0\ref\SMARTLOG.Services.dll

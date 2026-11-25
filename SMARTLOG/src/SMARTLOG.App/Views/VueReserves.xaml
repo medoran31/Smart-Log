@@ -1,0 +1,106 @@
+<UserControl x:Class="Smartlog.App.Views.VueReserves"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <DockPanel Grid.Row="0" Margin="0,0,0,12">
+            <TextBlock Text="Projet :" VerticalAlignment="Center" Margin="0,0,8,0" />
+            <ComboBox Width="320" Height="30" DockPanel.Dock="Left"
+                      ItemsSource="{Binding Projets}" DisplayMemberPath="Intitule"
+                      SelectedItem="{Binding ProjetSelectionne, Mode=TwoWay}"
+                      Margin="0,0,12,0" />
+            <TextBlock Text="{Binding Message}" VerticalAlignment="Center" Margin="16,0,0,0"
+                       Foreground="{StaticResource BrushAccent}" TextTrimming="CharacterEllipsis" />
+        </DockPanel>
+
+        <Border Grid.Row="1" BorderBrush="#D8DEE4" BorderThickness="1" CornerRadius="4"
+                Padding="12" Margin="0,0,0,12">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="150" />
+                    <ColumnDefinition Width="170" />
+                    <ColumnDefinition Width="120" />
+                    <ColumnDefinition Width="90" />
+                </Grid.ColumnDefinitions>
+
+                <TextBox Grid.Row="0" Grid.Column="0" Height="28" Margin="0,0,8,8"
+                         Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}"
+                         ToolTip="Description de la réserve" />
+                <ComboBox Grid.Row="0" Grid.Column="1" Height="28" Margin="0,0,8,8"
+                          ItemsSource="{Binding Priorites}" DisplayMemberPath="Libelle"
+                          SelectedItem="{Binding PrioriteSelectionnee, Mode=TwoWay}"
+                          ToolTip="Priorité" />
+                <ComboBox Grid.Row="0" Grid.Column="2" Height="28" Margin="0,0,8,8"
+                          ItemsSource="{Binding Entreprises}" DisplayMemberPath="RaisonSociale"
+                          SelectedItem="{Binding EntrepriseSelectionnee, Mode=TwoWay}"
+                          ToolTip="Entreprise responsable" />
+                <TextBox Grid.Row="0" Grid.Column="3" Height="28" Margin="0,0,8,8"
+                         Text="{Binding DateConstatationTexte, UpdateSourceTrigger=PropertyChanged}"
+                         ToolTip="Date de constatation (AAAA-MM-JJ)" />
+                <TextBox Grid.Row="0" Grid.Column="4" Height="28" Margin="0,0,0,8"
+                         Text="{Binding DelaiLeveeTexte, UpdateSourceTrigger=PropertyChanged}"
+                         ToolTip="Délai de levée en jours" />
+
+                <StackPanel Grid.Row="1" Grid.ColumnSpan="5" Orientation="Horizontal">
+                    <Button Content="Nouvelle réserve" Width="130" Height="28"
+                            Command="{Binding CreerCommand}" />
+                    <Button Content="Enregistrer" Width="100" Height="28" Margin="8,0,0,0"
+                            Command="{Binding EnregistrerCommand}" />
+                    <Button Width="160" Height="28" Margin="8,0,0,0"
+                            Command="{Binding ChangerStatutCommand}">
+                        <Button.Content>
+                            <MultiBinding StringFormat="{}Passer en {0}">
+                                <Binding Path="ProchaineEtape" />
+                            </MultiBinding>
+                        </Button.Content>
+                    </Button>
+                    <Button Content="Ouvrir le PV de levée" Width="160" Height="28" Margin="8,0,0,0"
+                            Command="{Binding OuvrirPvCommand}" />
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <DataGrid Grid.Row="2" ItemsSource="{Binding Reserves}"
+                  SelectedItem="{Binding ReserveSelectionnee, Mode=TwoWay}"
+                  AutoGenerateColumns="False" IsReadOnly="True"
+                  CanUserAddRows="False" SelectionMode="Single" SelectionUnit="FullRow"
+                  GridLinesVisibility="Horizontal" HeadersVisibility="Column"
+                  AlternatingRowBackground="#F7F9FA" FontSize="12">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="N°" Binding="{Binding Numero}" Width="45" />
+                <DataGridTextColumn Header="Description" Binding="{Binding Description}" Width="*" />
+                <DataGridTextColumn Header="Priorité" Binding="{Binding PrioriteLibelle}" Width="85" />
+                <DataGridTextColumn Header="Responsable" Binding="{Binding EntrepriseResponsableLibelle}" Width="180" />
+                <DataGridTextColumn Header="Constatée le" Binding="{Binding DateConstatation, StringFormat=dd/MM/yyyy}" Width="105" />
+                <DataGridTextColumn Header="Échéance" Binding="{Binding DateEcheanceLevee, StringFormat=dd/MM/yyyy}" Width="100" />
+                <DataGridTextColumn Header="Statut" Binding="{Binding StatutLibelle}" Width="110" />
+                <DataGridTextColumn Header="Levée le" Binding="{Binding DateLevee, StringFormat=dd/MM/yyyy}" Width="100" />
+                <DataGridTextColumn Header="Retard" Binding="{Binding JoursRestants, StringFormat='{}{0} j'}" Width="70" />
+            </DataGrid.Columns>
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding EstEnRetard}" Value="True">
+                            <Setter Property="Background" Value="#FDEDEC" />
+                            <Setter Property="Foreground" Value="#C0392B" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.RowStyle>
+        </DataGrid>
+
+        <TextBlock Grid.Row="3" Margin="0,10,0,0" FontSize="11" Foreground="#667"
+                   Text="Le cycle de levée est : Nouvelle → En cours → En vérification → Levée → Clôturée. Le PV est généré automatiquement à la levée." />
+    </Grid>
+</UserControl>

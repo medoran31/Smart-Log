@@ -1,0 +1,155 @@
+<UserControl x:Class="Smartlog.App.Views.VueMarches"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Margin="0,0,0,6">
+            <TextBlock Text="{Binding IntituleProjet}" FontSize="17" FontWeight="SemiBold" />
+            <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                <TextBlock Text="Marché : " FontWeight="SemiBold" />
+                <TextBlock Text="{Binding ReferenceMarche}" Margin="4,0,20,0" />
+                <TextBlock Text="Signé le : " FontWeight="SemiBold" />
+                <TextBlock Text="{Binding DateSignature}" Margin="4,0,20,0" />
+                <TextBlock Text="Montant actualisé : " FontWeight="SemiBold" />
+                <TextBlock Text="{Binding MontantActualise, StringFormat={}{0:N2} DA}" Margin="4,0,0,0" />
+            </StackPanel>
+        </StackPanel>
+
+        <TextBlock Grid.Row="1" Text="{Binding Message}" Foreground="#2E7D6B"
+                   Margin="0,0,0,10" TextWrapping="Wrap" />
+
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="280" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Pièces du marché -->
+            <Border Grid.Column="0" BorderBrush="#D8DEE4" BorderThickness="1"
+                    CornerRadius="4" Padding="10" Margin="0,0,12,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="Pièces du marché" FontWeight="SemiBold" Margin="0,0,0,8" />
+                    <ListBox Grid.Row="1" ItemsSource="{Binding Documents}"
+                             BorderThickness="0" Background="Transparent"
+                             MouseDoubleClick="Documents_MouseDoubleClick">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" Margin="2,4">
+                                    <TextBlock Text="📎" Margin="0,0,8,0" />
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding NomFichier}" FontWeight="SemiBold"
+                                                   TextTrimming="CharacterEllipsis" MaxWidth="190" />
+                                        <TextBlock FontSize="11" Foreground="Gray">
+                                            <TextBlock.Text>
+                                                <MultiBinding StringFormat="{}{0} — version {1}">
+                                                    <Binding Path="Categorie" />
+                                                    <Binding Path="Version" />
+                                                </MultiBinding>
+                                            </TextBlock.Text>
+                                        </TextBlock>
+                                    </StackPanel>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                    <Button Grid.Row="2" Content="Importer une pièce (PDF, Word, Excel)"
+                            Height="32" Margin="0,8,0,0" Click="ImporterPiece_Click"
+                            IsEnabled="{Binding EstCharge}" />
+                </Grid>
+            </Border>
+
+            <!-- Bordereau de prix unitaires -->
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <DockPanel Grid.Row="0" Margin="0,0,0,8">
+                    <TextBlock Text="Bordereau de prix unitaires" FontWeight="SemiBold"
+                               DockPanel.Dock="Left" VerticalAlignment="Center" />
+                    <TextBlock Text="{Binding TotalBordereau, StringFormat=Total : {0:N2} DA}"
+                               DockPanel.Dock="Right" FontWeight="SemiBold"
+                               Foreground="{StaticResource BrushAccent}" />
+                </DockPanel>
+
+                <DataGrid Grid.Row="1" ItemsSource="{Binding PrixUnitaires}"
+                          SelectedItem="{Binding PrixSelectionne, Mode=TwoWay}"
+                          AutoGenerateColumns="False" IsReadOnly="True"
+                          CanUserAddRows="False" CanUserSortColumns="True"
+                          SelectionMode="Single" SelectionUnit="FullRow"
+                          GridLinesVisibility="Horizontal" HeadersVisibility="Column"
+                          AlternatingRowBackground="#F7F9FA" FontSize="13">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Référence" Binding="{Binding Reference}" Width="90" />
+                        <DataGridTextColumn Header="Désignation" Binding="{Binding Designation}" Width="*" />
+                        <DataGridTextColumn Header="Unité" Binding="{Binding Unite}" Width="70" />
+                        <DataGridTextColumn Header="Prix unitaire HT" Binding="{Binding PrixUnitaireHT, StringFormat={}{0:N2} DA}" Width="130" />
+                        <DataGridTextColumn Header="Quantité" Binding="{Binding QuantiteContractuelle, StringFormat={}{0:N3}}" Width="100" />
+                        <DataGridTextColumn Header="Montant contractuel" Binding="{Binding MontantContractuel, StringFormat={}{0:N2} DA}" Width="150" />
+                    </DataGrid.Columns>
+                </DataGrid>
+
+                <Border Grid.Row="2" BorderBrush="#D8DEE4" BorderThickness="1"
+                        CornerRadius="4" Padding="10" Margin="0,10,0,0">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Référence :" VerticalAlignment="Center" Margin="0,0,6,6" />
+                        <TextBox Grid.Row="0" Grid.Column="1" Height="28" Margin="0,0,10,6"
+                                 IsEnabled="{Binding EstCharge}"
+                                 Text="{Binding Reference, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBlock Grid.Row="0" Grid.Column="2" Text="Désignation :" VerticalAlignment="Center" Margin="0,0,6,6" />
+                        <TextBox Grid.Row="0" Grid.Column="3" Height="28" Margin="0,0,10,6"
+                                 IsEnabled="{Binding EstCharge}"
+                                 Text="{Binding Designation, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBlock Grid.Row="0" Grid.Column="4" Text="Unité :" VerticalAlignment="Center" Margin="0,0,6,6" />
+                        <TextBox Grid.Row="0" Grid.Column="5" Height="28" Margin="0,0,0,6"
+                                 IsEnabled="{Binding EstCharge}"
+                                 Text="{Binding Unite, UpdateSourceTrigger=PropertyChanged}" />
+
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Prix HT :" VerticalAlignment="Center" Margin="0,0,6,0" />
+                        <TextBox Grid.Row="1" Grid.Column="1" Height="28" Margin="0,0,10,0"
+                                 IsEnabled="{Binding EstCharge}"
+                                 Text="{Binding PrixUnitaireHTTexte, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBlock Grid.Row="1" Grid.Column="2" Text="Quantité :" VerticalAlignment="Center" Margin="0,0,6,0" />
+                        <TextBox Grid.Row="1" Grid.Column="3" Height="28" Margin="0,0,10,0"
+                                 IsEnabled="{Binding EstCharge}"
+                                 Text="{Binding QuantiteContractuelleTexte, UpdateSourceTrigger=PropertyChanged}" />
+                        <StackPanel Grid.Row="1" Grid.Column="4" Grid.ColumnSpan="2"
+                                    Orientation="Horizontal" HorizontalAlignment="Right">
+                            <Button Content="Ajouter" Width="90" Height="30" Margin="0,0,8,0"
+                                    Command="{Binding AjouterPrixCommand}" />
+                            <Button Content="Modifier" Width="90" Height="30" Margin="0,0,8,0"
+                                    Command="{Binding ModifierPrixCommand}" />
+                            <Button Content="Supprimer" Width="90" Height="30"
+                                    Command="{Binding SupprimerPrixCommand}" />
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </Grid>
+        </Grid>
+    </Grid>
+</UserControl>

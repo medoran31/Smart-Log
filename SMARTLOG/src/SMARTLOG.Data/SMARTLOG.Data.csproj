@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>Smartlog.Data</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- SQLite en mono-poste aujourd'hui ; migration vers Npgsql/SqlServer
+         demain sans changer la couche Services (voir §4 de l'étude). -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.10" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.10">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SMARTLOG.Domain\SMARTLOG.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

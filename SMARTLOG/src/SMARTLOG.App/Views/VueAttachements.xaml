@@ -1,0 +1,191 @@
+<UserControl x:Class="Smartlog.App.Views.VueAttachements"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="250" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="330" />
+        </Grid.ColumnDefinitions>
+
+        <!-- Barre projet et actions -->
+        <DockPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,0,0,10">
+            <TextBlock Text="Projet :" VerticalAlignment="Center" Margin="0,0,8,0" />
+            <ComboBox Width="280" Height="30" DockPanel.Dock="Left"
+                      ItemsSource="{Binding Projets}" DisplayMemberPath="Intitule"
+                      SelectedItem="{Binding ProjetSelectionne, Mode=TwoWay}"
+                      Margin="0,0,16,0" />
+            <Button Content="Nouvel attachement" Width="150" Height="30" DockPanel.Dock="Right"
+                    Command="{Binding NouvelAttachementCommand}" Margin="8,0,0,0" />
+            <Button Content="Créer / recalculer la situation" Width="210" Height="30" DockPanel.Dock="Right"
+                    Command="{Binding CreerSituationCommand}" />
+            <TextBlock Text="{Binding Message}" VerticalAlignment="Center" Margin="16,0,0,0"
+                       Foreground="{StaticResource BrushAccent}" TextTrimming="CharacterEllipsis" />
+        </DockPanel>
+
+        <!-- Attachements du projet -->
+        <Border Grid.Row="1" Grid.Column="0" BorderBrush="#D8DEE4" BorderThickness="1"
+                CornerRadius="4" Padding="8" Margin="0,0,10,0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <TextBlock Text="Attachements" FontWeight="SemiBold" Margin="0,0,0,8" />
+                <DataGrid Grid.Row="1" ItemsSource="{Binding Attachements}"
+                          SelectedItem="{Binding AttachementSelectionne, Mode=TwoWay}"
+                          AutoGenerateColumns="False" IsReadOnly="True"
+                          CanUserAddRows="False" SelectionMode="Single" SelectionUnit="FullRow"
+                          GridLinesVisibility="Horizontal" HeadersVisibility="Column"
+                          AlternatingRowBackground="#F7F9FA" FontSize="12">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Date" Binding="{Binding Date, StringFormat=d}" Width="90" />
+                        <DataGridTextColumn Header="Statut" Binding="{Binding Statut}" Width="95" />
+                        <DataGridTextColumn Header="Lignes" Binding="{Binding NombreLignes}" Width="55" />
+                        <DataGridTextColumn Header="Montant" Binding="{Binding MontantTotal, StringFormat=N2}" Width="*" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+        </Border>
+
+        <!-- Lignes exécutées : les lignes en dépassement sont surlignées en rouge -->
+        <Border Grid.Row="1" Grid.Column="1" BorderBrush="#D8DEE4" BorderThickness="1"
+                CornerRadius="4" Padding="8" Margin="0,0,10,0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0" Text="Quantités exécutées" FontWeight="SemiBold" Margin="0,0,0,8" />
+
+                <!-- Formulaire de saisie -->
+                <Border Grid.Row="1" BorderBrush="{StaticResource BrushAccent}" BorderThickness="1"
+                        CornerRadius="4" Padding="10" Background="#F2F8F6" Margin="0,0,0,10">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="120" />
+                            <ColumnDefinition Width="120" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Prix unitaire" FontWeight="SemiBold" />
+                        <TextBlock Grid.Row="0" Grid.Column="1" Text="Quantité" FontWeight="SemiBold" />
+                        <TextBlock Grid.Row="0" Grid.Column="2" Text="Aperçu (calculé)" FontWeight="SemiBold" />
+                        <ComboBox Grid.Row="1" Grid.Column="0" Height="28" Margin="0,0,8,0"
+                                  ItemsSource="{Binding PrixUnitaires}"
+                                  SelectedItem="{Binding PrixSelectionne, Mode=TwoWay}"
+                                  DisplayMemberPath="Designation" />
+                        <TextBox Grid.Row="1" Grid.Column="1" Height="28" Margin="0,0,8,0"
+                                 Text="{Binding QuantiteTexte, UpdateSourceTrigger=PropertyChanged}"
+                                 VerticalContentAlignment="Center" />
+                        <TextBlock Grid.Row="1" Grid.Column="2" Height="28" VerticalAlignment="Center"
+                                   Text="{Binding MontantApercu, StringFormat=N2}" FontWeight="SemiBold" />
+                        <StackPanel Grid.Row="1" Grid.Column="3" Orientation="Horizontal">
+                            <Button Content="Ajouter" Width="70" Height="28" Margin="8,0,0,0"
+                                    Command="{Binding AjouterLigneCommand}" />
+                            <Button Content="Modifier" Width="70" Height="28" Margin="8,0,0,0"
+                                    Command="{Binding ModifierLigneCommand}" />
+                            <Button Content="Supprimer" Width="75" Height="28" Margin="8,0,0,0"
+                                    Command="{Binding SupprimerLigneCommand}" />
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <!-- Alerte visuelle de dépassement du reliquat -->
+                <Border Grid.Row="2" Background="#FFE4E1" CornerRadius="4" Padding="8"
+                        Margin="0,0,0,8"
+                        Visibility="{Binding DepassementApercu, Converter={StaticResource BoolVersVisibilite}}">
+                    <TextBlock Text="{Binding DepassementTexte}"
+                               Foreground="#B00020" FontWeight="SemiBold" TextWrapping="Wrap" />
+                </Border>
+
+                <DataGrid Grid.Row="2" ItemsSource="{Binding Lignes}"
+                          SelectedItem="{Binding LigneSelectionnee, Mode=TwoWay}"
+                          AutoGenerateColumns="False" IsReadOnly="True"
+                          CanUserAddRows="False" SelectionMode="Single" SelectionUnit="FullRow"
+                          GridLinesVisibility="Horizontal" HeadersVisibility="Column"
+                          AlternatingRowBackground="#F7F9FA" FontSize="12">
+                    <DataGrid.RowStyle>
+                        <Style TargetType="DataGridRow">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding DepasseReliquat}" Value="True">
+                                    <Setter Property="Background" Value="#FFE4E1" />
+                                    <Setter Property="Foreground" Value="#B00020" />
+                                    <Setter Property="ToolTip"
+                                            Value="⚠ La quantité exécutée dépasse le reliquat contractuel" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGrid.RowStyle>
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Réf." Binding="{Binding ReferencePrix}" Width="70" />
+                        <DataGridTextColumn Header="Désignation" Binding="{Binding Designation}" Width="*" />
+                        <DataGridTextColumn Header="PU HT" Binding="{Binding PrixUnitaireHT, StringFormat=N2}" Width="80" />
+                        <DataGridTextColumn Header="Contractuel" Binding="{Binding QuantiteContractuelle, StringFormat=N2}" Width="90" />
+                        <DataGridTextColumn Header="Exécuté" Binding="{Binding QuantiteExecutee, StringFormat=N2}" Width="80" />
+                        <DataGridTextColumn Header="Reliquat" Binding="{Binding ReliquatApresLigne, StringFormat=N2}" Width="80" />
+                        <DataGridTextColumn Header="Montant" Binding="{Binding MontantCalcule, StringFormat=N2}" Width="90" />
+                        <DataGridTextColumn Header="Alerte" Binding="{Binding DepasseReliquat}" Width="60" />
+                    </DataGrid.Columns>
+                </DataGrid>
+
+                <DockPanel Grid.Row="3" Margin="0,8,0,0">
+                    <Button Content="Valider l'attachement" Width="170" Height="30" DockPanel.Dock="Right"
+                            Command="{Binding ValiderAttachementCommand}" />
+                    <TextBlock Text="Les lignes rouges dépassent le reliquat ; la validation reste possible mais doit être régularisée par un avenant."
+                               TextWrapping="Wrap" Foreground="#B00020" Margin="0,0,12,0" />
+                </DockPanel>
+            </Grid>
+        </Border>
+
+        <!-- Paramètres et situations -->
+        <ScrollViewer Grid.Row="1" Grid.Column="2" VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+                <Border BorderBrush="#D8DEE4" BorderThickness="1" CornerRadius="4" Padding="12">
+                    <StackPanel>
+                        <TextBlock Text="Situation à générer" FontWeight="SemiBold" Margin="0,0,0,8" />
+                        <TextBlock Text="Période (AAAA-MM) :" Margin="0,0,0,3" />
+                        <TextBox Text="{Binding Periode, UpdateSourceTrigger=PropertyChanged}"
+                                 Height="28" Margin="0,0,0,8" />
+                        <TextBlock Text="Pénalités :" Margin="0,0,0,3" />
+                        <TextBox Text="{Binding PenalitesTexte, UpdateSourceTrigger=PropertyChanged}"
+                                 Height="28" Margin="0,0,0,8" />
+                        <TextBlock Text="Retenue de garantie 5 % et avance 10 % appliquées par le service."
+                                   TextWrapping="Wrap" FontSize="12" Foreground="#455" />
+                    </StackPanel>
+                </Border>
+
+                <Border BorderBrush="#D8DEE4" BorderThickness="1" CornerRadius="4"
+                        Padding="12" Margin="0,12,0,0">
+                    <StackPanel>
+                        <TextBlock Text="Situations du projet" FontWeight="SemiBold" Margin="0,0,0,8" />
+                        <DataGrid ItemsSource="{Binding Situations}" AutoGenerateColumns="False"
+                                  IsReadOnly="True" CanUserAddRows="False" Height="260"
+                                  GridLinesVisibility="Horizontal" HeadersVisibility="Column"
+                                  AlternatingRowBackground="#F7F9FA" FontSize="11">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Période" Binding="{Binding Periode}" Width="70" />
+                                <DataGridTextColumn Header="Cumul" Binding="{Binding MontantCumule, StringFormat=N2}" Width="80" />
+                                <DataGridTextColumn Header="Retenue" Binding="{Binding RetenueGarantie, StringFormat=N2}" Width="75" />
+                                <DataGridTextColumn Header="Avance" Binding="{Binding Avance, StringFormat=N2}" Width="70" />
+                                <DataGridTextColumn Header="Pénalités" Binding="{Binding Penalites, StringFormat=N2}" Width="75" />
+                                <DataGridTextColumn Header="Net" Binding="{Binding NetAPayer, StringFormat=N2}" Width="80" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>
